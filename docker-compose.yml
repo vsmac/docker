@@ -1,0 +1,14 @@
+version: '2'
+services:
+  web:
+    image: java:8
+    container_name: name_of_container
+    restart: always
+    ports: 
+      - "8080:8080"
+    volumes:
+      - "/opt/docker/conf:/opt/conf/"
+      - "/opt/docker/jar/:/opt/"
+#    command: nohup java -jar /opt/test-0.0.1-SNAPSHOT.jar &
+    
+ 
