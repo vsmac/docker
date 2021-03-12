@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  logioweb:
+    hostname: hostname
+    image: 'blacklabelops/logio:latest'
+    container_name: logio
+    environment:
+      - 'LOGIO_ADMIN_USER=username'
+      - 'LOGIO_ADMIN_PASSWORD=password'
+    ports:
+      - '28778:28778'
+    volumes:
+      - '/opt/logs'
+  harvester:
+    image: 'blacklabelops/logio:latest'
+    environment:
+      - 'DELAYED_START=10'
+      - 'LOGIO_HARVESTER_NODENAME=Server_logs'
+      ###############  STREAM 1 FOR container 1  ####################
+      - 'LOGIO_HARVESTER1STREAMNAME=container1'
+      - 'LOGIO_HARVESTER1LOGSTREAMS=path of log file'
+      - 'LOGIO_HARVESTER1FILEPATTERN=*.log'
+      ################### STREAM 2 NGINX LOGS #################
+      - 'LOGIO_HARVESTER2STREAMNAME=nginx'
+      - 'LOGIO_HARVESTER2LOGSTREAMS=/var/log/nginx/'
+      - 'LOGIO_HARVESTER2FILEPATTERN=*.log'
+    volumes:
+      - '/var/lib/docker:/var/lib/docker'
+      - '/var/log/nginx:/var/log/nginx'
+      - './log/eagleeye/:/var/log/eagleeye/'
+    links:
+            - logioweb:logio
+    user: root
+    command: harvester
+
+
+networks:
+    default:
+       external:
+            name: br0
